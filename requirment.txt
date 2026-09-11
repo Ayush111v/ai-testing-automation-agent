@@ -1,0 +1,17 @@
+using the nestjs
+neon for db
+clerk for auth
+angular for frontend
+tailwind for styling
+testify for ai
+playwright for automation
+
+
+
+
+(drizzle only)
+1. you should have start the drizzle for cmd using this command    npx drizzle-kit studio    to get into web access
+2. get push the changes in drizzle -                               npx drizzle-kit push
+
+
+
