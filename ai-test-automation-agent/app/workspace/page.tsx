@@ -3,7 +3,7 @@ import React from 'react'
 
 function Workspace(){
     return (
-        <div className='mx-auto max-w-7xl p-10'>
+        <div className='mx-auto max-w-4xl p-10'>
             <WorkspaceBody/>
         </div>
 
