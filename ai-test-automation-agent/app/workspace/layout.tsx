@@ -1,3 +1,4 @@
+import WorkspaceHeader from '@/components/custom/WorkspaceHeader';
 import React from 'react'
 
 function WorkspaceLayout({ children }: {
@@ -5,7 +6,12 @@ function WorkspaceLayout({ children }: {
 
 }) {
     return (
-        <div>{children}</div>
+        <div>
+            
+            <WorkspaceHeader />
+            
+            {children}
+            </div>
     )
 }
 
