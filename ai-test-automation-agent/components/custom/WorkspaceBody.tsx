@@ -1,44 +1,60 @@
 "use client"
+
 import { UserDetailContext } from '@/context/UserDetailContext'
-import { Button } from '@base-ui/react/button';
+import { Button } from '@base-ui/react/button'
 import Image from 'next/image'
 import React, { useContext, useEffect, useState } from 'react'
-import { Card, CardContent } from '../ui/card';
-import EmptyWorkspace from './EmptyWorkspace';
-
-import axios from 'axios';
-
+import { Card, CardContent } from '../ui/card'
+import EmptyWorkspace from './EmptyWorkspace'
+import axios from 'axios'
+import RepoDialog from './RepoDialog'
 
 function WorkspaceBody() {
 
-    const { userDetail } = useContext(UserDetailContext);
-    const [token, setToken] = useState('');
+    const { userDetail } = useContext(UserDetailContext)
+    const [token, setToken] = useState('')
 
+    const GetGithubUserToken = async () => {
+        try {
+            const result = await axios.get('/api/github/token')
+
+            console.log("GitHub Token:", result.data.token)
+
+            setToken(result.data.token || '')
+        } catch (error) {
+            console.error("Error getting GitHub token:", error)
+            setToken('')
+        }
+    }
 
     useEffect(() => {
-        GetGithubUserToken();
-    }, []);
-    const GetGithubUserToken = async () => {
-        const result = await axios.get('/api/github/token');
-        console.log(result.data.token)
-        setToken(result.data.token);
-    }
-
-
-
+        GetGithubUserToken()
+    }, [])
 
     const OnAddRepo = () => {
-        window.location.href = '/api/github';
+        window.location.href = '/api/github'
     }
+
     return (
         <div>
 
             <div className='flex justify-between items-center'>
-                <h2 className='text-4xl font-meduim'>Workspace</h2>
-                <h2 className='text-green-800 bg-blue-100 px-2 rounded-lg'>Remaining Credits: {userDetail?.credits}</h2>
+
+                <h2 className='text-4xl font-medium'>
+                    Workspace
+                </h2>
+
+                <h2 className='text-green-800 bg-blue-100 px-2 rounded-lg'>
+                    Remaining Credits: {userDetail?.credits}
+                </h2>
+
             </div>
+
+
             <Card className='mt-5 !flex !flex-row justify-between items-center p-4 border rounded-lg w-full max-w-[735px]'>
+
                 <div className='flex items-center gap-5'>
+
                     <Image
                         src='/githubb.png'
                         alt='github'
@@ -49,20 +65,45 @@ function WorkspaceBody() {
                     <h2 className='text-lg'>
                         Connect Github & Add Repository
                     </h2>
+
                 </div>
 
-                {!token ? <Button onClick={OnAddRepo} className='bg-[#6b9f45] text-white px-4 py-2 rounded-md'>
-                    setup
-                </Button> : <Button>+ add Repo</Button>
-                }
+
+                <div>
+
+                    {!token ? (
+
+                        <Button
+                            onClick={OnAddRepo}
+                            className='bg-[#6b9f45] text-white px-4 py-2 rounded-md'
+                        >
+                            Setup
+                        </Button>
+
+                    ) : (
+
+                        <RepoDialog
+                            setRefreshPage={(refresh: boolean) =>
+                                console.log(refresh)
+                            }
+                        />
+
+                    )}
+
+                </div>
+
             </Card>
+
+
             <Card className='mt-10'>
+
                 <CardContent>
                     <EmptyWorkspace />
                 </CardContent>
-            </Card>
-        </div>
 
+            </Card>
+
+        </div>
     )
 }
 
