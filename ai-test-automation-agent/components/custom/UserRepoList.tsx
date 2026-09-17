@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import Image from 'next/image'
 import { UserRepo } from './WorkspaceBody'
 import {
@@ -7,8 +7,10 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { CheckCircle2, ListChecks, Sparkles, TrendingUp, XCircle } from 'lucide-react'
+import { CheckCircle2, ListChecks, Loader2, Sparkles, TrendingUp, XCircle } from 'lucide-react'
 import { Button } from '@base-ui/react'
+import axios from 'axios'
+import { UserDetailContext } from '@/context/UserDetailContext'
 
 type Props = {
     repoList: UserRepo[]
@@ -22,6 +24,24 @@ function UserRepoList({ repoList }: Props) {
     const passRate = totalTests > 0
         ? Math.round((passedTests / totalTests) * 100)
         : 0
+    const { userDetail } = useContext(UserDetailContext);
+    const [loading, setLoading] = useState(false);
+    const handleGenerateTests = async (repo: UserRepo) => {
+
+        setLoading(true);
+        const result = await axios.post('/api/generate-test-cases', {
+            userId: userDetail?.id,
+            repoId: repo?.repoId,
+            owner: repo.owner,
+            repo: repo.name,
+            branch: repo.defaultBranch,
+
+        })
+        console.log(result.data);
+        setLoading(false);
+
+
+    }
     return (
         <div className='mt-10'>
             <h2 className='my-3 font-medium'>REPOSITORIES</h2>
@@ -80,14 +100,20 @@ function UserRepoList({ repoList }: Props) {
 
                                 <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 border rounded-xl p-4 bg-gray-50'>
                                     <div>
-                                        <h3 className='font-medium'>Generate AI Test Cases</h3>
+                                        <h3 className='font-medium'>
+                                            {loading? 'Generating test cases...' : 
+                                            'Generate AI Test Cases'}</h3>
                                         <p className='text-sm text-gray-500 mt-1'>
                                             Analyze this repository and generate automated test cases using AI.
                                         </p>
                                     </div>
 
-                                    <Button className='gap-2'>
-                                        <Sparkles className='h-6 w-6' />
+                                    <Button className='gap-2' 
+                                    
+                                    
+                                    disabled={loading}
+                                    onClick={() => handleGenerateTests(repo)}>
+                                        {loading?<Loader2 className='animate-spin'/>:<Sparkles className='h-6 w-6' />}
                                         Click Me To Generate Test Cases
                                     </Button>
                                 </div>
@@ -129,3 +155,4 @@ function StatusCard({
         </div>
     )
 }
+
