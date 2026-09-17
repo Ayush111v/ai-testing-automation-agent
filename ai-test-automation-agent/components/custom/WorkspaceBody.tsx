@@ -30,7 +30,7 @@ function WorkspaceBody() {
 
     const { userDetail } = useContext(UserDetailContext)
     const [token, setToken] = useState('')
-    const [userRepoList,setUserRspoList] = useState<UserRepo[]>([]);
+    const [userRepoList, setUserRepoList] = useState<UserRepo[]>([]);
 
     const GetGithubUserToken = async () => {
         try {
@@ -60,7 +60,7 @@ function WorkspaceBody() {
     const GetUserAddedRepoList = async () => {
         const result = await axios.get('/api/user-repo?userId=' + userDetail?.id);
         console.log(result.data);
-        setUserRspoList(result.data);
+        setUserRepoList(result.data);
     }
 
     return (
@@ -122,16 +122,15 @@ function WorkspaceBody() {
             </Card>
 
 
-            {!userRepoList? <Card className='mt-10'>
-
-                <CardContent>
-                 <EmptyWorkspace />
-                  
-                   
-                </CardContent>
-
-            </Card>:
-               <UserRepoList repoList={userRepoList}/>}
+            {userRepoList?.length === 0 ? (
+                <Card className='mt-10'>
+                    <CardContent>
+                        <EmptyWorkspace />
+                    </CardContent>
+                </Card>
+            ) : (
+                <UserRepoList repoList={userRepoList} />
+            )}
 
         </div>
     )
